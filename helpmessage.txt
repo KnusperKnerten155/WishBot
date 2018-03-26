@@ -1,0 +1,8 @@
+```
+Es gibt folgende Befehle:
+
+$ich mag Pokemon: Gibt dir eine Antwort
+$attack: Gibt eine zufällige Attacke zurück
+$wunsch [beliebiger Inhalt]: Wünsche dir etwas, was du in Zukunft gerne auf dem Server/Map hättest!
+$liste: Gibt dir eine Liste, was bisher schon gewünscht wurde
+```
