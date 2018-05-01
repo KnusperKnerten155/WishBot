@@ -83,17 +83,16 @@ def on_message(message):
            
             x = message.server.members
             for member in x:
-                #print(member.name)
-                for role in member.roles:
-                    if role.id=='339715070114136065': #instinct
-                        InstinctMembers.append(member.name)
-                    elif role.id=='339715116541149186': #mystic
-                        MysticMembers.append(member.name)
-                    elif role.id=='339715177635250177': #valor
-                        ValorMembers.append(member.name)
-                    elif role.id=='332139679883198465': #bots
-                        BotMembers.append(member.name)
-                    
+                    #print(member.name)
+                    for role in member.roles:
+                        if role.name=='instinct': #instinct
+                            InstinctMembers.append(member.name)
+                        elif role.name=='mystic': #mystic
+                            MysticMembers.append(member.name)
+                        elif role.name=='valor': #valor
+                            ValorMembers.append(member.name)
+                        elif role.name=='Bots': #bots
+                            BotMembers.append(member.name)
           
             InstinctCount = len(InstinctMembers)
             #print('Instinct: \n' + str(InstinctMembers))
@@ -175,7 +174,93 @@ def on_message(message):
             embed.set_author(name="PokéGo MS" , icon_url="https://www.pokewiki.de/images/9/96/Sugimori_001.png")
             yield from client.send_message(message.author, embed=embed)
             yield from client.send_message(message.channel, "Ich habe dir eine PN geschickt " + message.author.name + " :wink:")
-        
+       
+      
+    
+       #meetup
+        elif message.content.startswith(prefix+'meetup') or message.content.startswith(prefix+'Meetup'):
+            meetup = discord.utils.get(message.server.roles, name='meetup')
+            if meetup in message.author.roles:
+                yield from client.remove_roles(message.author, meetup)
+                yield from client.send_message(message.channel,embed=Embed(color=discord.Color.green(), description=( "%s \nDu bist aus der Rolle ** %s ** *ausgetreten* und wirst ab jetzt *nicht mehr* benachrichtigt, wenn jemand eine wichtige Nachricht für das nächste Meetup sendet <:Wobbuffet:365242567312539659> " % (message.author.mention , meetup.name))))
+            else:
+                yield from client.add_roles(message.author, meetup)
+                yield from client.send_message(message.channel,embed=Embed(color=discord.Color.green(), description=( "%s \nDu bist der Rolle ** %s ** *beigetreten* und wirst ab jetzt *immer* benachrichtigt, wenn jemand eine wichtige Nachricht für das nächste Meetup sendet <:Wobbuffet:365242567312539659> " % (message.author.mention , meetup.name))))
+
+       #admincheck
+        elif message.content.startswith(prefix+'count') or message.content.startswith(prefix+'Count'):
+            admin = discord.utils.get(message.server.roles, name='admin')
+            if admin in message.author.roles:
+                current =  datetime.datetime.now()
+                now = current.strftime ("%Y-%m-%d, um %H:%M Uhr")
+
+                #listen initialisieren
+                InstinctMembers = [ ]
+                MysticMembers = [ ]
+                ValorMembers = [ ]
+                BotMembers = [ ]
+                CheckedMembers = [ ]
+           
+                x = message.server.members
+                for member in x:
+                    #print(member.name)
+                    for role in member.roles:
+                        if role.name=='instinct': #instinct
+                            InstinctMembers.append(member.name)
+                        elif role.name=='mystic': #mystic
+                            MysticMembers.append(member.name)
+                        elif role.name=='valor': #valor
+                            ValorMembers.append(member.name)
+                        elif role.name=='Bots': #bots
+                            BotMembers.append(member.name)
+                        elif role.name=='Checked': #checked
+                            CheckedMembers.append(member.name)
+                    
+          
+                InstinctCount = len(InstinctMembers)
+                #print('Instinct: \n' + str(InstinctMembers))
+                print(InstinctCount)
+            
+                MysticCount = len(MysticMembers)
+                #print('Mystic: \n' + str(MysticMembers))
+                print(MysticCount)
+            
+                ValorCount = len(ValorMembers)
+                #print('Valor: \n' + str(ValorMembers))
+                print(ValorCount)
+
+                BotCount = len(BotMembers)
+                #print('Bots: \n' + str(BotMembers))
+                print(BotCount)
+
+                CheckedCount = len(CheckedMembers)
+                #print('Akzeptiert: \n' + str(CheckedMembers))
+                print(CheckedCount)
+                percentage=CheckedCount/message.server.member_count*100
+                print('Satz: ' + str(percentage))
+                CheckedPercentage=str(int(percentage))
+            
+                embed=Embed(
+                   color=discord.Color.green()   ,
+                   description=("**Trainer gesamt:**  %s \n**<:instinct:410759229473947649> Instinct:** %s \n**<:mystic:365202251691851786> Mystic:** %s \n**<:valor:410759232334462977> Valor:** %s \n\n**Bots:** %s  \n\n**Checked:** %s (%s %s) \n\nam %s" % (message.server.member_count, InstinctCount, MysticCount, ValorCount, BotCount , CheckedCount, CheckedPercentage , '%' ,  now))
+                   
+
+                    )
+                embed.set_author(name="PokéGo MS" , icon_url="https://www.pokewiki.de/images/9/96/Sugimori_001.png")
+            
+                yield from client.send_message(message.channel, embed=embed)
+
+            if not admin in message.author.roles:
+                embed=Embed(
+                   color=discord.Color.red()   ,
+                   description=('Du bist nicht dazu authorisiert, diesen Befehl zu nutzen')
+                   
+
+                    )
+                yield from client.send_message(message.channel, embed=embed)
+                
+            
+            
        #Errorcode
         else:
             yield from client.send_message(message.channel, embed=Embed(color=discord.Color.red(), description=("Dieser Befehl `%s` ist nicht gültig!" % invoke)))
